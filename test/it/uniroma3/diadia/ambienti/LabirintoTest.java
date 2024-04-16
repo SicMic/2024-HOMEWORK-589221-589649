@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import it.uniroma3.diadia.attrezzi.Attrezzo;
+
 public class LabirintoTest {
 
 	// Test getStanzaIniziale -- INIZIO
@@ -16,11 +18,17 @@ public class LabirintoTest {
 	}
 	
 	@Test
-	public void testGetStanzaIniziale_StanzaSbagliata() {
+	public void testGetStanzaIniziale_NomeSbagliato() {
 		Labirinto labirinto = new Labirinto();
-		Stanza stanza = new Stanza("stanza");
 		
-		assertNotEquals(stanza, labirinto.getStanzaIniziale());
+		assertNotEquals("Biblioteca", labirinto.getStanzaIniziale());
+	}
+	
+	@Test
+	public void testGetStanzaIniziale_NomeCorretto() {
+		Labirinto labirinto = new Labirinto();
+		
+		assertEquals("Atrio", labirinto.getStanzaIniziale().getNome());
 	}
 	
 	// Test getStanzaIniziale -- FINE
@@ -35,14 +43,19 @@ public class LabirintoTest {
 	}
 	
 	@Test
-	public void testGetStanzaFinale_StanzaSbagliata() {
+	public void testGetStanzaFinale_NomeSbagliato() {
 		Labirinto labirinto = new Labirinto();
-		Stanza stanza = new Stanza("stanza");
 		
-		assertNotEquals(stanza, labirinto.getStanzaFinale());
+		assertNotEquals("Atrio", labirinto.getStanzaFinale());
+	}
+	
+	@Test
+	public void testGetStanzaFinale_NomeCorretto() {
+		Labirinto labirinto = new Labirinto();
+		
+		assertEquals("Biblioteca", labirinto.getStanzaFinale().getNome());
 	}
 	
 	//Test getStanzaFinale -- FINE
-	
 
 }

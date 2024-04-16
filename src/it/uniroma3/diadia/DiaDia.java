@@ -1,6 +1,7 @@
 package it.uniroma3.diadia;
 
 import it.uniroma3.diadia.ambienti.Stanza;
+import it.uniroma3.diadia.attrezzi.Attrezzo;
 import it.uniroma3.diadia.giocatore.Borsa;
 
 /**
@@ -89,8 +90,9 @@ public class DiaDia {
 	 * Stampa informazioni di aiuto.
 	 */
 	private void aiuto(IOConsole console) {
+		console.mostraMessaggio("Comandi:");
 		for(int i=0; i< elencoComandi.length; i++) 
-			console.mostraMessaggio(elencoComandi[i]+" ");
+			console.mostraMessaggio("- "+elencoComandi[i]+" ");
 		console.mostraMessaggio("");
 	}
 
@@ -112,12 +114,24 @@ public class DiaDia {
 			this.partita.getGiocatore().setCfu(cfu--);
 		}
 		console.mostraMessaggio(partita.getStanzaCorrente().getDescrizione());
+		console.mostraMessaggio(this.partita.getGiocatore().getBorsa().toString());
 	}
 	
 	private void prendi(String attrezzo, IOConsole console) {
 		
 		Stanza stanza = this.partita.getStanzaCorrente();
 		Borsa borsa = this.partita.getGiocatore().getBorsa();
+		
+//		Attrezzo attrezzoDaPrendere = stanza.getAttrezzo(attrezzo);
+//		
+//		if(stanza.removeAttrezzo(attrezzoDaPrendere))
+//			if(borsa.addAttrezzo(attrezzoDaPrendere))
+//				console.mostraMessaggio("Attrezzo preso!");
+//		
+//		else {
+//			stanza.addAttrezzo(attrezzoDaPrendere);
+//			console.mostraMessaggio("Operazione non riuscita!");
+//		}
 		
 		boolean aggiunto = false;
 		boolean rimosso = false;
@@ -134,7 +148,9 @@ public class DiaDia {
 		else if(aggiunto == true && rimosso == false) {
 			borsa.removeAttrezzo(attrezzo);
 			console.mostraMessaggio("Operazione non riuscita");
-		}
+			
+		} else
+			console.mostraMessaggio("Operazione non riuscita");
 		
 	}
 	
@@ -143,9 +159,29 @@ public class DiaDia {
 		Stanza stanza = this.partita.getStanzaCorrente();
 		Borsa borsa = this.partita.getGiocatore().getBorsa();
 		
+		Attrezzo attrezzoDaPosare = borsa.getAttrezzo(attrezzo);
 		
-		if(stanza.addAttrezzo(borsa.removeAttrezzo(attrezzo)))
+		boolean rimosso = false;
+		boolean aggiunto = false;
+
+		if (attrezzoDaPosare != null) {
+			if(borsa.removeAttrezzo(attrezzoDaPosare.getNome()) != null) {
+				rimosso = true;
+				if (stanza.addAttrezzo(attrezzoDaPosare))
+					aggiunto = true;
+			}
+		}
+		
+		if (rimosso && aggiunto)
 			console.mostraMessaggio("Attrezzo posato!");
+		
+		else if (rimosso && !aggiunto) {
+			borsa.addAttrezzo(attrezzoDaPosare);
+			console.mostraMessaggio("Operazione non riuscita");
+			
+		} else
+			console.mostraMessaggio("Operazione non riuscita");
+		
 
 	}
 

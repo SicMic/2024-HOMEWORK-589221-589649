@@ -177,6 +177,9 @@ public class Stanza {
 	 */
 	public boolean removeAttrezzo(Attrezzo attrezzo) {
 
+		if (attrezzo == null)
+			return false;
+		
 		boolean rimosso = false;
 		int i = 0;
 		

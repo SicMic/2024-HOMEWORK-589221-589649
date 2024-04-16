@@ -84,6 +84,9 @@ public class Borsa {
 	public Attrezzo removeAttrezzo(String nomeAttrezzo) {
 		Attrezzo a = null;
 		
+		if (nomeAttrezzo == "")
+			return a;
+		
 		int i = 0;
 		for(Attrezzo attrezzo : this.attrezzi) {
 			if (attrezzo != null) {
@@ -103,7 +106,8 @@ public class Borsa {
 			s.append("Contenuto borsa ("+this.getPeso()+"kg/"+this.getPesoMax()+"kg): ");
 			
 			for(Attrezzo attrezzo : this.attrezzi)
-				s.append(attrezzo.toString() + " ");
+				if (attrezzo != null)
+					s.append(attrezzo.toString() + " ");
 			
 //			for (int i= 0; i<this.numeroAttrezzi; i++)
 //				s.append(attrezzi[i].toString()+" ");
