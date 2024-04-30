@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import it.uniroma3.diadia.attrezzi.Attrezzo;
-
 public class LabirintoTest {
 
 	// Test getStanzaIniziale -- INIZIO
