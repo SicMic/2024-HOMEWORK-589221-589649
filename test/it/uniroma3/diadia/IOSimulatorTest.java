@@ -55,12 +55,12 @@ public class IOSimulatorTest {
 		
 		assertEquals("Aula N11", ioSimulator.getMessaggio(1));
 		assertEquals("Aula N11\n"
-				+ "Uscite:  est ovest nord\n"
+				+ "Uscite:  nord sud est ovest\n"
 				+ "Attrezzi nella stanza: ", ioSimulator.getMessaggio(2));
 		
 		assertEquals("Numero CFU : 19" ,ioSimulator.getMessaggio(3));
 		assertEquals("Borsa vuota" ,ioSimulator.getMessaggio(4));
-		assertEquals("Direzione inesistente", ioSimulator.getMessaggio(5));
+		assertEquals("Aula N9", ioSimulator.getMessaggio(5));
 		assertEquals("Grazie di aver giocato!", ioSimulator.getMessaggio(6));
 	}
 

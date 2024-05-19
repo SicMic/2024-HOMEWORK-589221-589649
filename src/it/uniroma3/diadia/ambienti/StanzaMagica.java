@@ -22,7 +22,7 @@ public class StanzaMagica extends Stanza {
 	public boolean addAttrezzo(Attrezzo attrezzo) {
 		this.contatoreAttrezziPosati++;
 		if (this.contatoreAttrezziPosati>this.sogliaMagica)
-		attrezzo = this.modificaAttrezzo(attrezzo);
+			attrezzo = this.modificaAttrezzo(attrezzo);
 		return super.addAttrezzo(attrezzo);
 	}
 	

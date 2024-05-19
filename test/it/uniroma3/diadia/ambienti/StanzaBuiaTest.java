@@ -10,14 +10,14 @@ public class StanzaBuiaTest {
 
 	@Test
 	public void testGetDescrizione_LanternaNonPresente() {
-		StanzaBuia stanzaBuia = new StanzaBuia("stanza");
+		StanzaBuia stanzaBuia = new StanzaBuia("stanza", "lanterna");
 		
 		assertEquals("in questa stanza c'è buio pesto", stanzaBuia.getDescrizione());
 	}
 	
 	@Test
 	public void testGetDescrizione_LanternaPresente() {
-		StanzaBuia stanzaBuia = new StanzaBuia("stanza");
+		StanzaBuia stanzaBuia = new StanzaBuia("stanza", "lanterna");
 		Attrezzo lanterna = new Attrezzo("lanterna", 1);
 		stanzaBuia.addAttrezzo(lanterna);
 		

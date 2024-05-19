@@ -1,6 +1,7 @@
 package it.uniroma3.diadia.ambienti;
 
 import it.uniroma3.diadia.attrezzi.Attrezzo;
+import java.util.*;
 
 /**
  * Classe Stanza - una stanza in un gioco di ruolo.
@@ -19,9 +20,9 @@ public class StanzaProtected{
 	static final private int NUMERO_MASSIMO_ATTREZZI = 10;
 	
 	protected String nome;
-    protected Attrezzo[] attrezzi;
+    protected HashSet<Attrezzo> insiemeAttrezzi;
     protected int numeroAttrezzi;
-    protected Stanza[] stanzeAdiacenti;
+    protected Stanza[] stanzeAdiacenti; 		//da modificare con vettore direzioni e mettere mappa 
     protected int numeroStanzeAdiacenti;
 	protected String[] direzioni;
     
@@ -35,7 +36,7 @@ public class StanzaProtected{
         this.numeroAttrezzi = 0;
         this.direzioni = new String[NUMERO_MASSIMO_DIREZIONI];
         this.stanzeAdiacenti = new Stanza[NUMERO_MASSIMO_DIREZIONI];
-        this.attrezzi = new Attrezzo[NUMERO_MASSIMO_ATTREZZI];
+        this.insiemeAttrezzi = new HashSet<>();
     }
 
     /**
@@ -91,8 +92,8 @@ public class StanzaProtected{
      * Restituisce la collezione di attrezzi presenti nella stanza.
      * @return la collezione di attrezzi nella stanza.
      */
-    public Attrezzo[] getAttrezzi() {
-        return this.attrezzi;
+    public HashSet<Attrezzo> getAttrezzi() {
+        return this.insiemeAttrezzi;
     }
 
     /**
@@ -102,16 +103,8 @@ public class StanzaProtected{
      */
     public boolean addAttrezzo(Attrezzo attrezzo) {
         if (this.numeroAttrezzi < NUMERO_MASSIMO_ATTREZZI) {
-        	int i = 0;
-        	for(Attrezzo posizione : this.attrezzi) {
-        		if (posizione == null) {
-        			this.attrezzi[i] = attrezzo;
-        			break;
-        		}
-        		i++;
-        	}
         	this.numeroAttrezzi++;
-        	return true;
+        	return this.insiemeAttrezzi.add(attrezzo);
         }
         else {
         	return false;
@@ -131,7 +124,7 @@ public class StanzaProtected{
     		if (direzione!=null)
     			risultato.append(" " + direzione);
     	risultato.append("\nAttrezzi nella stanza: ");
-    	for (Attrezzo attrezzo : this.attrezzi) {
+    	for (Attrezzo attrezzo : this.insiemeAttrezzi) {
     		if(attrezzo != null)
     			risultato.append(attrezzo.toString()+" ");
     	}
@@ -145,7 +138,7 @@ public class StanzaProtected{
 	public boolean hasAttrezzo(String nomeAttrezzo) {
 		boolean trovato;
 		trovato = false;
-		for (Attrezzo attrezzo : this.attrezzi) {
+		for (Attrezzo attrezzo : this.insiemeAttrezzi) {
 			if (attrezzo != null)
 				if (attrezzo.getNome().equals(nomeAttrezzo))
 					trovato = true;
@@ -162,7 +155,7 @@ public class StanzaProtected{
 	public Attrezzo getAttrezzo(String nomeAttrezzo) {
 		Attrezzo attrezzoCercato;
 		attrezzoCercato = null;
-		for (Attrezzo attrezzo : this.attrezzi) {
+		for (Attrezzo attrezzo : this.insiemeAttrezzi) {
 			if (attrezzo != null)
 				if (attrezzo.getNome().equals(nomeAttrezzo))
 					attrezzoCercato = attrezzo;
@@ -181,20 +174,14 @@ public class StanzaProtected{
 			return false;
 		
 		boolean rimosso = false;
-		int i = 0;
 		
-		for(Attrezzo elemento: this.attrezzi) {
-			if (elemento != null) {
-				if (attrezzo.getNome().equals(elemento.getNome())){
-					this.attrezzi[i]=null;
-					return true;
-				}
-			}
-			i++;
+		for(Attrezzo elemento: this.insiemeAttrezzi) {
+			if (attrezzo.getNome().equals(elemento.getNome()))
+				return this.insiemeAttrezzi.remove(attrezzo);
 		}
 		
 		return rimosso;
-	}
+}
 
 
 	public String[] getDirezioni() {

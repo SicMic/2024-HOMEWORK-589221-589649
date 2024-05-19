@@ -1,23 +1,25 @@
 package it.uniroma3.diadia;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class IOSimulator implements IO{
 	
 	private static final int messaggiMax = 100;
 	
-	private String messaggi[] = new String[messaggiMax];
-	private int numeroMessaggi = 0;
+	
+	private List<String> messaggi;
 	private Scanner scannerDiLinee;
 	
 	public IOSimulator(String comandi) {
+		this.messaggi = new ArrayList<>();
 		scannerDiLinee = new Scanner(comandi).useDelimiter("\n");
 	}
 
 	@Override
 	public void mostraMessaggio(String messaggio) {
-		messaggi[this.numeroMessaggi] = messaggio;
-		this.numeroMessaggi += 1;
+		this.messaggi.add(messaggio);
 	}
 
 	@Override
@@ -32,7 +34,7 @@ public class IOSimulator implements IO{
 	}
 	
 	public String getMessaggio(int indice) {
-		return this.messaggi[indice];
+		return this.messaggi.get(indice);
 	}
 
 }

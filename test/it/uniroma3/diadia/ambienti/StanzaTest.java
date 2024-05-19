@@ -181,8 +181,7 @@ public class StanzaTest{
 		while(stanza.addAttrezzo(attrezzo)) {
 			i++;
 			attrezzo = new Attrezzo("attrezzo"+i, i);	
-		}
-		
+		}		
 		assertTrue(stanza.hasAttrezzo("attrezzo9"));
 	}
 	
