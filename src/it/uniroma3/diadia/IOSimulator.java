@@ -2,39 +2,50 @@ package it.uniroma3.diadia;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Iterator;
 
 public class IOSimulator implements IO{
+	private List<String> input;
+	private List<String> output;
+	private Iterator<String> countIN;
+	private Iterator<String> countOUT;
 	
-	private static final int messaggiMax = 100;
-	
-	
-	private List<String> messaggi;
-	private Scanner scannerDiLinee;
-	
-	public IOSimulator(String comandi) {
-		this.messaggi = new ArrayList<>();
-		scannerDiLinee = new Scanner(comandi).useDelimiter("\n");
+	public void setInput(List<String> comandi) {
+		this.input=comandi;
 	}
-
-	@Override
-	public void mostraMessaggio(String messaggio) {
-		this.messaggi.add(messaggio);
+	
+	public List<String> getOutput() {
+		return output;
 	}
-
+	
+	public Iterator<String> getCountOUT() {
+		return countOUT;
+	}
+	
 	@Override
 	public String leggiRiga() {
-		String riga = "";
-		if (scannerDiLinee.hasNext())
-			riga = scannerDiLinee.nextLine();
-		
-		//scannerDiLinee.close();
-		
+		String riga = null;
+
+		if(countIN.hasNext()) riga = countIN.next();
 		return riga;
 	}
 	
-	public String getMessaggio(int indice) {
-		return this.messaggi.get(indice);
+	@Override
+	public void mostraMessaggio(String messaggio) {
+		this.output.add(messaggio);
 	}
-
+	
+	public IOSimulator() {
+		this.input = new ArrayList<String>();
+		this.countIN = input.iterator();
+		this.output = new ArrayList<String>();
+		this.countOUT = output.iterator();
+	}
+	
+	public IOSimulator(List<String> righeDaLeggere) {
+		this.input = righeDaLeggere;
+		this.countIN = input.iterator();
+		this.output = new ArrayList<String>();
+		this.countOUT = output.iterator();
+	}
 }

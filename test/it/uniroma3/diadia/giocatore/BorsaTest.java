@@ -3,348 +3,247 @@ package it.uniroma3.diadia.giocatore;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
+import org.junit.Before;
+import org.junit.Test;
 
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
-import org.junit.Test;
-
 public class BorsaTest {
+	private Borsa borsa;
+	private Attrezzo a1;
+	private Attrezzo a2;
+	private Attrezzo peso10;
+	private Attrezzo peso9;
 
-	// Test addAttrezzo -- INIZIO
-	
+	@Before
+	public void setUp() {
+		this.borsa = new Borsa(10);
+		this.a1 = new Attrezzo("a1",1);
+		this.a2 = new Attrezzo("a2",2);
+		new Attrezzo("a3",3);
+		this.peso10 = new Attrezzo("peso", 10);
+		this.peso9 = new Attrezzo("peso", 9);
+	}
+
+	/* Test addAttrezzo */
 	@Test
 	public void testAddAttrezzo_BorsaVuota() {
-		
-		Borsa borsa = new Borsa();
-		Attrezzo attrezzo = new Attrezzo("attrezzo", 1);
-		assertTrue(borsa.addAttrezzo(attrezzo));
+		this.borsa.addAttrezzo(a1);
+		assertTrue(this.borsa.hasAttrezzo("a1"));
 	}
-	
+
 	@Test
-	public void testAddAttrezzo_BorsaPesoMax() {
-		
-		Borsa borsa = new Borsa();
-		
-		Attrezzo attrezzo = new Attrezzo("attrezzo0", 0);
-		int i=0;
-		while(borsa.addAttrezzo(attrezzo)) {
-			i++;
-			attrezzo = new Attrezzo("attrezzo"+i, i);
-		}
-		
-		Attrezzo attrezzoExtra = new Attrezzo("attrezzoExtra", 5);
-		
-		assertFalse(borsa.addAttrezzo(attrezzoExtra));		
+	public void testAddAttrezzo_BorsaNonVuota() {
+		this.borsa.addAttrezzo(a1);
+		this.borsa.addAttrezzo(a2);
+		assertTrue(this.borsa.hasAttrezzo("a1"));
+		assertTrue(this.borsa.hasAttrezzo("a2"));
 	}
-	
+
 	@Test
-	public void testAddAttrezzo_NumeroMassimoAttrezzi() {
-		
-		Borsa borsa = new Borsa();
-		Attrezzo attrezzo = new Attrezzo("attrezzo0", 1);
-		int i=0;
-		while(borsa.addAttrezzo(attrezzo)) {
-			i++;
-			attrezzo = new Attrezzo("attrezzo"+i, 1);
-		}
-		
-		Attrezzo attrezzoExtra = new Attrezzo("attrezzoExtra", 2);
-		assertFalse(borsa.addAttrezzo(attrezzoExtra));
+	public void testAddAttrezzo_BorsaPiena() {
+		this.borsa.addAttrezzo(peso10);
+		assertFalse(this.borsa.addAttrezzo(a1));
 	}
-	
-	// Test addAttrezzo -- FINE
-	
-	// Test getAttrezzo -- INIZIO
-	
+
+	@Test
+	public void testAddAttrezzo_BorsaQuasiPienaEAggiuntaSupererebbeLimite() {
+		this.borsa.addAttrezzo(peso9);
+		assertFalse(this.borsa.addAttrezzo(a2));
+	}
+
+	/* Test getAttrezzo */
+	@Test
+	public void testGetAttrezzo_OggettoInBorsa(){
+		this.borsa.addAttrezzo(a1);
+		assertEquals(a1,this.borsa.getAttrezzo("a1"));
+	}
+
 	@Test
 	public void testGetAttrezzo_BorsaVuota() {
-		
-		Borsa borsa = new Borsa();
-		
-		assertNull(borsa.getAttrezzo("attrezzo"));
-	}
-	
-	@Test
-	public void testGetAttrezzo_OggettoPresenteInBorsa() {
-		
-		Borsa borsa = new Borsa();
-		
-		Attrezzo attrezzo = new Attrezzo("attrezzo0", 1);
-		int i=0;
-		while(borsa.addAttrezzo(attrezzo)) {
-			i++;
-			attrezzo = new Attrezzo("attrezzo"+i, 1);
-		}
-		
-		assertNotNull(borsa.getAttrezzo("attrezzo4"));
+		assertNull(this.borsa.getAttrezzo("a1"));
 	}
 
 	@Test
-	public void testGetAttrezzo_OggettoAssente() {
-		
-		Borsa borsa = new Borsa();
-		
-		Attrezzo attrezzo = new Attrezzo("attrezzo0", 1);
-		int i=0;
-		while(borsa.addAttrezzo(attrezzo)) {
-			i++;
-			attrezzo = new Attrezzo("attrezzo"+i, 1);
-		}
-		
-		assertNull(borsa.getAttrezzo("attrezzo10"));
+	public void testGetAttrezzo_BorsaNonVuotaOggettoNonInBorsa() {
+		this.borsa.addAttrezzo(a1);
+		assertNull(this.borsa.getAttrezzo("a2"));
 	}
-	
-	// Test getAttrezzo -- FINE
-	
-	// Test getPeso -- INIZIO
-	
+
+	/* Test hasAttrezzo */
 	@Test
-	public void testGetPeso_BorsaVuota() {
-		
-		Borsa borsa = new Borsa();
-		assertEquals(0, borsa.getPeso());
+	public void testHasAttrezzo_OggettoInBorsa() {
+		this.borsa.addAttrezzo(a1);
+		assertTrue(this.borsa.hasAttrezzo("a1"));
 	}
-	
+
 	@Test
-	public void testGetPeso_BorsaUnElemento() {
-		
-		Borsa borsa = new Borsa();
-		Attrezzo attrezzo = new Attrezzo("attrezzo", 4);
-		
-		borsa.addAttrezzo(attrezzo);
-		
-		assertEquals(4, borsa.getPeso());
+	public void testHasAttrezzo_BorsaVuota() {
+		assertFalse(this.borsa.hasAttrezzo("a1"));
 	}
-	
+
 	@Test
-	public void testGetPeso_BorsaPienaElementi() {
-		
-		Borsa borsa = new Borsa();
-		
-		Attrezzo attrezzo = new Attrezzo("attrezzo0", 1);
-		int i=0;
-		while(borsa.addAttrezzo(attrezzo)) {
-			i++;
-			attrezzo = new Attrezzo("attrezzo"+i, 1);
-		}
-		
-		assertEquals(10, borsa.getPeso());
+	public void testHasAttrezzo_BorsaNonVuotaOggettoNonInBorsa() {
+		this.borsa.addAttrezzo(a1);
+		assertFalse(this.borsa.hasAttrezzo("a2"));
 	}
-	
+
+	/* Test removeAttrezzo */
 	@Test
-	public void testGetPeso_BorsaPesoMassimo() {
-		
-		Borsa borsa = new Borsa();
-		
-		Attrezzo attrezzo1 = new Attrezzo("attrezzo1", 6);
-		Attrezzo attrezzo2 = new Attrezzo("attrezzo2", 4);
-		
-		borsa.addAttrezzo(attrezzo1);
-		borsa.addAttrezzo(attrezzo2);
-		
-		assertEquals(10, borsa.getPeso());
+	public void testRemoveAttrezzo_InBorsa() {
+		this.borsa.addAttrezzo(a1);
+		assertEquals(a1,this.borsa.removeAttrezzo("a1"));
 	}
-	
+
 	@Test
-	public void testGetPeso_BorsaPiena() {
-        Borsa borsa = new Borsa();
-        int i = 0;
-        Attrezzo attrezzo = new Attrezzo("attrezzo"+i, 1);
-        while(borsa.addAttrezzo(attrezzo)) {
-            i++;
-            attrezzo = new Attrezzo("attrezzo"+i, 1);
-            borsa.addAttrezzo(attrezzo);
-        }
-        assertEquals(10, borsa.getPeso());
-    }
-	
-	// Test getPeso -- FINE
-	
-	// Test removeAttrezzo -- INIZIO
-	
+	public void testRemoveAttrezzo_NonInBorsa() {
+		this.borsa.addAttrezzo(a1);
+		assertNull(this.borsa.removeAttrezzo("a2"));
+	}
+
+	@Test
+	public void testRemoveAttrezzo_SecondoAttrezzo() {
+		this.borsa.addAttrezzo(a1);
+		this.borsa.addAttrezzo(a2);
+		assertEquals(a2,this.borsa.removeAttrezzo("a2"));
+	}
+
 	@Test
 	public void testRemoveAttrezzo_BorsaVuota() {
-		
-		Borsa borsa = new Borsa();
-		
-		assertNull(borsa.removeAttrezzo("attrezzo"));
+		assertNull(this.borsa.removeAttrezzo("a1"));
 	}
-	
-	@Test
-    public void testRemoveAttrezzo_ElementoPresente() {
-		
-        Borsa borsa = new Borsa();
-        Attrezzo attrezzo1 = new Attrezzo("attrezzo1", 1);
-        Attrezzo attrezzo2 = new Attrezzo("attrezzo2", 1);
-        Attrezzo attrezzo3 = new Attrezzo("attrezzo3", 1);
 
-        borsa.addAttrezzo(attrezzo1);
-        borsa.addAttrezzo(attrezzo2);
-        borsa.addAttrezzo(attrezzo3);
-
-        assertEquals(attrezzo2, borsa.getAttrezzo("attrezzo2"));
-    }
-	
+	/* Test isEmpty */
 	@Test
-	public void testRemoveAttrezzo_ElementoAssente() {
-		
-		Borsa borsa = new Borsa();
-		Attrezzo attrezzo1 = new Attrezzo("attrezzo1", 1);
-        Attrezzo attrezzo2 = new Attrezzo("attrezzo2", 1);
-        
-        borsa.addAttrezzo(attrezzo1);
-        borsa.addAttrezzo(attrezzo2);
-        
-        assertNull(borsa.removeAttrezzo("attrezzo3"));
-    
+	public void testIsEmpty_BorsaVuota() {
+		assertTrue(this.borsa.isEmpty());
 	}
-	
-	// Test removeAttrezzo -- FINE
-	
-	// Test getContenutoOrdinatoPerPeso -- INIZIO
-	
+
+	@Test
+	public void testIsEmpty_BorsaNonVuota() {
+		this.borsa.addAttrezzo(a1);
+		assertFalse(this.borsa.isEmpty());
+	}
+
+	@Test
+	public void testIsEmpty_BorsaPiena() {
+		this.borsa.addAttrezzo(peso10);
+		assertFalse(this.borsa.isEmpty());
+	}
+
+	/* Test getContenutoOrdinatoPerPeso */
 	@Test
 	public void testGetContenutoOrdinatoPerPeso_BorsaVuota() {
-		
-		Borsa borsa = new Borsa();
-		
-		assertNull(borsa.getContenutoOrdinatoPerPeso());
-	}
-	
-	@Test
-	public void testGetContenutoOrdinatoPerPeso_PesiDiveri() {
-		
-		Borsa borsa = new Borsa();
-		
-		Attrezzo attrezzo1 = new Attrezzo("attrezzo1", 5);
-		Attrezzo attrezzo2 = new Attrezzo("attrezzo2", 2);
-		Attrezzo attrezzo3 = new Attrezzo("attrezzo3", 3);
-		
-		borsa.addAttrezzo(attrezzo1);
-		borsa.addAttrezzo(attrezzo2);
-		borsa.addAttrezzo(attrezzo3);
-		
-		List<Attrezzo> listaOrdinata = borsa.getContenutoOrdinatoPerPeso();
-		
-		assertEquals(attrezzo2, listaOrdinata.get(0));
-		assertEquals(attrezzo3, listaOrdinata.get(1));
-		assertEquals(attrezzo1, listaOrdinata.get(2));
-	}
-	
-	@Test
-	public void testGetContenutoOrdinatoPerPeso_PesiUguali() {
-		
-		Borsa borsa = new Borsa();
-		
-		Attrezzo attrezzo1 = new Attrezzo("attrezzo1", 2);
-		Attrezzo attrezzo2 = new Attrezzo("attrezzo2", 2);
-		Attrezzo attrezzo3 = new Attrezzo("attrezzo3", 2);
-		Attrezzo attrezzo4 = new Attrezzo("attrezzo4", 2);
-		Attrezzo attrezzo5 = new Attrezzo("attrezzo5", 2);
-		
-		borsa.addAttrezzo(attrezzo3);
-		borsa.addAttrezzo(attrezzo1);
-		borsa.addAttrezzo(attrezzo5);
-		borsa.addAttrezzo(attrezzo4);
-		borsa.addAttrezzo(attrezzo2);
-		
-		assertEquals(attrezzo1, borsa.getContenutoOrdinatoPerPeso().get(0));
-		assertEquals(attrezzo2, borsa.getContenutoOrdinatoPerPeso().get(1));
-		assertEquals(attrezzo3, borsa.getContenutoOrdinatoPerPeso().get(2));
-		assertEquals(attrezzo4, borsa.getContenutoOrdinatoPerPeso().get(3));
-		assertEquals(attrezzo5, borsa.getContenutoOrdinatoPerPeso().get(4));
-		
+		assertTrue(this.borsa.getContenutoOrdinatoPerPeso().isEmpty());
 	}
 
-	// Test getContenutoOrdinatoPerPeso -- FINE
-	
-	//Test getContenutoOrdinatoPerNome -- INIZIO
-	
+	@Test
+	public void testGetContenutoOrdinatoPerPeso_BorsaConDueAttrezziConLoStessoPeso() {
+		Attrezzo a1_2 = new Attrezzo("a1_2",1);
+		this.borsa.addAttrezzo(a1);
+		this.borsa.addAttrezzo(a1_2);
+		assertEquals(a1,this.borsa.getContenutoOrdinatoPerPeso().get(0));
+		assertEquals(a1_2,this.borsa.getContenutoOrdinatoPerPeso().get(1));
+	}
+
+	@Test
+	public void testGetContenutoOrdinatoPerPeso_BorsaConDueAttrezziConPesiDIversi() {
+		this.borsa.addAttrezzo(a1);
+		this.borsa.addAttrezzo(a2);
+		assertEquals(a1,this.borsa.getContenutoOrdinatoPerPeso().get(0));
+		assertEquals(a2,this.borsa.getContenutoOrdinatoPerPeso().get(1));	
+	}
+
+	/* Test getContenutoOrdinatoPerNome */
 	@Test
 	public void testGetContenutoOrdinatoPerNome_BorsaVuota() {
-		
-		Borsa borsa = new Borsa();
-		
-		assertNull(borsa.getContenutoOrdinatoPerNome());
+		assertTrue(this.borsa.getContenutoOrdinatoPerNome().isEmpty());
 	}
-	
-	@Test
-	public void testGetContenutoOrdinatoPerNome_NomiDiversi() {
-		
-		Borsa borsa = new Borsa();
-		
-		Attrezzo attrezzo1 = new Attrezzo("aaattrezzo", 1);
-		Attrezzo attrezzo2 = new Attrezzo("abattrezzo", 3);
-		Attrezzo attrezzo3 = new Attrezzo("bbattrezzo", 2);
-		
-		borsa.addAttrezzo(attrezzo3);
-		borsa.addAttrezzo(attrezzo2);
-		borsa.addAttrezzo(attrezzo1);
-		
-		SortedSet<Attrezzo> insiemeOrdinato = borsa.getContenutoOrdinatoPerNome();
-		
-		Iterator<Attrezzo> i = insiemeOrdinato.iterator();
-		Attrezzo attrezzoLetto = i.next();
-		assertEquals(attrezzo1, attrezzoLetto);
-		attrezzoLetto = i.next();
-		assertEquals(attrezzo2, attrezzoLetto);
-		attrezzoLetto = i.next();
-		assertEquals(attrezzo3, attrezzoLetto);
-		
-	}
-	
-	
-	//Test getContenutoOrdinatoPerNome -- FINE
 
-	//Test getContenutoRaggruppatoPerPeso -- INIZIO
-	
+	@Test
+	public void testGetContenutoOrdinatoPerNome_BorsaConDueOggetti() {
+		Attrezzo attrezzo_a = new Attrezzo("a",1);
+		Attrezzo attrezzo_b = new Attrezzo("b",1);
+		this.borsa.addAttrezzo(attrezzo_a);
+		this.borsa.addAttrezzo(attrezzo_b);
+
+		Set<Attrezzo> contenuto = this.borsa.getContenutoOrdinatoPerNome();
+
+		Iterator<Attrezzo> iter = contenuto.iterator();
+		assertEquals(attrezzo_a,iter.next());
+		assertEquals(attrezzo_b,iter.next());
+
+
+
+	}
+
+	@Test
+	public void getContenutoOrdinatoPerNome_BorsaConTreAttrezzi() {
+		Attrezzo attrezzo_a = new Attrezzo("a",1);
+		Attrezzo attrezzo_b = new Attrezzo("b",1);
+		Attrezzo attrezzo_c = new Attrezzo("c",1);
+		this.borsa.addAttrezzo(attrezzo_a);
+		this.borsa.addAttrezzo(attrezzo_b);
+		this.borsa.addAttrezzo(attrezzo_c);
+		Set<Attrezzo> set = this.borsa.getContenutoOrdinatoPerNome();
+		Iterator<Attrezzo> i = set.iterator();
+		assertEquals(attrezzo_a,i.next());
+		assertEquals(attrezzo_b,i.next());
+		assertEquals(attrezzo_c,i.next());
+	}
+
+	/* Test GetContenutoRaggruppatoPerPeso */
 	@Test
 	public void testGetContenutoRaggruppatoPerPeso_BorsaVuota() {
-		
-		Borsa borsa = new Borsa();
-		
-		assertNull(borsa.getContenutoRaggruppatoPerPeso());
-		
+		assertTrue(this.borsa.getContenutoRaggruppatoPerPeso().isEmpty());
+	}
+
+	@Test
+	public void testGetContenutoRaggruppatoPerPeso_BorsaConDueOggettiConDueOggettiConLoStessoPeso() {
+		Attrezzo a1copia = new Attrezzo("a1copia",1);
+		this.borsa.addAttrezzo(a1);
+		this.borsa.addAttrezzo(a1copia);
+		Set<Attrezzo> set = this.borsa.getContenutoRaggruppatoPerPeso().get(1);
+		Iterator<Attrezzo> i =set.iterator();
+		assertEquals(a1,i.next());
+		assertEquals(a1copia,i.next());
+	}
+
+	@Test
+	public void testGetContenutoRaggruppatoPerPeso_BorsaConDueOggettiConDueOggettiConPesoDiverso() {
+		this.borsa.addAttrezzo(a1);
+		this.borsa.addAttrezzo(a2);
+		Set<Integer> set = this.borsa.getContenutoRaggruppatoPerPeso().keySet();
+		Iterator<Integer> i = set.iterator();
+		assertTrue(1==i.next());
+		assertTrue(2==i.next());
+	}
+
+	/*Test getSortedSetOrdinatoPerPeso*/
+	@Test
+	public void testGetSortedSetOrdinatoPerPeso_BorsaVuota() {
+		assertTrue(this.borsa.getSortedSetOrdinatoPerPeso().isEmpty());
 	}
 	
 	@Test
-	public void testGetContenutoRaggruppatoPerPeso_molteplicitàSingola() {
-		
-		Borsa borsa = new Borsa();
-		
-		Attrezzo attrezzo1 = new Attrezzo("attrezzo1", 2);
-		Attrezzo attrezzo2 = new Attrezzo("attrezzo2", 1);
-		Attrezzo attrezzo3 = new Attrezzo("attrezzo3", 2);
-		Attrezzo attrezzo4 = new Attrezzo("attrezzo4", 1);
-		Attrezzo attrezzo5 = new Attrezzo("attrezzo5", 1);
-		
-		borsa.addAttrezzo(attrezzo1);
-		borsa.addAttrezzo(attrezzo2);
-		borsa.addAttrezzo(attrezzo3);
-		borsa.addAttrezzo(attrezzo4);
-		borsa.addAttrezzo(attrezzo5);
-		
-		Map<Integer, Set<Attrezzo>> attrezziRaggruppati = borsa.getContenutoRaggruppatoPerPeso();
-		
-		assertTrue(attrezziRaggruppati.containsKey(1));
-		assertTrue(attrezziRaggruppati.containsKey(2));
-		
-		Set<Attrezzo> insieme1 = attrezziRaggruppati.get(1);
-		
-		assertTrue(insieme1.contains(attrezzo2));
-		assertTrue(insieme1.contains(attrezzo4));
-		assertTrue(insieme1.contains(attrezzo5));
-		
-		Set<Attrezzo> insieme2 = attrezziRaggruppati.get(2);
-		
-		assertTrue(insieme2.contains(attrezzo1));
-		assertTrue(insieme2.contains(attrezzo3));
-		
+	public void testGetSortedSetOrdinatoPerPeso_BorsaConDueOggettiConLoStrssoPeso() {
+		Attrezzo a1copia = new Attrezzo("a1copia",1);
+		this.borsa.addAttrezzo(a1);
+		this.borsa.addAttrezzo(a1copia);
+		Set<Attrezzo> set = this.borsa.getSortedSetOrdinatoPerPeso();
+		Iterator<Attrezzo> i = set.iterator();
+		assertEquals(a1,i.next());
+		assertEquals(a1copia,i.next());
 	}
 	
-	//Test getContenutoRaggruppatoPerPeso -- FINE
+	@Test
+	public void testGetSortedSetOrdinatoPerPeso_BorsaConDueOggettiConPesoDiverso() {
+		this.borsa.addAttrezzo(a1);
+		this.borsa.addAttrezzo(a2);
+		Set<Attrezzo> set = this.borsa.getSortedSetOrdinatoPerPeso();
+		Iterator<Attrezzo> i = set.iterator();
+		assertEquals(a1,i.next());
+		assertEquals(a2,i.next());
+	}
 }

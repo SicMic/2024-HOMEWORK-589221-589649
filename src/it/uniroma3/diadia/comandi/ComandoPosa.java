@@ -2,62 +2,36 @@ package it.uniroma3.diadia.comandi;
 
 import it.uniroma3.diadia.IO;
 import it.uniroma3.diadia.Partita;
-import it.uniroma3.diadia.ambienti.Stanza;
-import it.uniroma3.diadia.attrezzi.Attrezzo;
-import it.uniroma3.diadia.giocatore.Borsa;
 
-public class ComandoPosa implements Comando{
+import it.uniroma3.diadia.attrezzi.Attrezzo;
+
+public class ComandoPosa extends AbstractComando{
 	
-	private IO console;
-	private String attrezzo;
+	public ComandoPosa(IO io) {
+		super("posa", io);
+	}
 	
-	
-	public ComandoPosa(IO console) {
-		this.console = console;
+	public ComandoPosa() {
+		this(null);
 	}
 
 	@Override
 	public void esegui(Partita partita) {
-		Stanza stanza = partita.getStanzaCorrente();
-		Borsa borsa = partita.getGiocatore().getBorsa();
-		
-		Attrezzo attrezzoDaPosare = borsa.getAttrezzo(attrezzo);
-		
-		boolean rimosso = false;
-		boolean aggiunto = false;
-
-		if (attrezzoDaPosare != null) {
-			if(borsa.removeAttrezzo(attrezzoDaPosare.getNome()) != null) {
-				rimosso = true;
-				if (stanza.addAttrezzo(attrezzoDaPosare))
-					aggiunto = true;
-			}
+		if(this.getParametro()==null) {
+			this.getIo().mostraMessaggio("specificare l'attrezzo da posare");
+			return;
 		}
-		
-		if (rimosso && aggiunto)
-			console.mostraMessaggio("Attrezzo posato!");
-		
-		else if (rimosso && !aggiunto) {
-			borsa.addAttrezzo(attrezzoDaPosare);
-			console.mostraMessaggio("Operazione non riuscita");
-			
-		} else
-			console.mostraMessaggio("Operazione non riuscita");		
-	}
-
-	@Override
-	public void setParametro(String parametro) {
-		this.attrezzo = parametro;
-	}
-	
-	@Override
-	public String getNome() {
-		return "posa";
-	}
-
-	@Override
-	public String getParametro() {
-		return this.attrezzo;
+		if(partita.getGiocatore().getBorsa().isEmpty()) {
+			this.getIo().mostraMessaggio("nessun attrezzo nella borsa");
+			return;
+		}
+		Attrezzo a = partita.getGiocatore().getBorsa().getAttrezzo(this.getParametro());
+		if(a!=null) {
+			partita.getStanzaCorrente().addAttrezzo(a);
+			partita.getGiocatore().getBorsa().removeAttrezzo(this.getParametro());
+			this.getIo().mostraMessaggio(this.getParametro()+" rimosso dalla borsa e posato in "+partita.getStanzaCorrente().getNome());
+		}
+		else this.getIo().mostraMessaggio(this.getParametro() + " non presente in borsa");
 	}
 
 }

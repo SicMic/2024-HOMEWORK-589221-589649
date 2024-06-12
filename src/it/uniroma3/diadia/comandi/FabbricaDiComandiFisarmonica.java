@@ -1,50 +1,40 @@
 package it.uniroma3.diadia.comandi;
 
+import java.util.Scanner;
+
 import it.uniroma3.diadia.IO;
 
-public class FabbricaDiComandiFisarmonica implements FabbricaDiComandi{
-	
-	private IO console;
-	
-	private String nomeComando;
-	private String parametro;
-	
-	public FabbricaDiComandiFisarmonica(IO console) {
-		this.console = console;
-	}
-
+public class FabbricaDiComandiFisarmonica implements FabbricaDiComandi {
 	@Override
-	public Comando costruisciComando(String istruzione) {
+	public AbstractComando costruisciComando(String istruzione, IO io) {
+		try(Scanner scannerDiParole = new Scanner(istruzione)){
+			String nomeComando = null;
+			String parametro = null;
+			AbstractComando comando = null;
+			
+			if (scannerDiParole.hasNext())
+				nomeComando = scannerDiParole.next();// prima parola: nome del comando
+			if (scannerDiParole.hasNext())
+				parametro = scannerDiParole.next(); // seconda parola: eventuale param.
+			
+			if (nomeComando == null)
+				comando = new ComandoNonValido(io);
+			else if (nomeComando.equals("vai"))
+				comando = new ComandoVai(io);
+			else if (nomeComando.equals("prendi"))
+				comando = new ComandoPrendi(io);
+			else if (nomeComando.equals("posa"))
+				comando = new ComandoPosa(io);
+			else if (nomeComando.equals("aiuto"))
+				comando = new ComandoAiuto(io);
+			else if (nomeComando.equals("fine"))
+				comando = new ComandoFine(io);
+			else if (nomeComando.equals("guarda"))
+				comando = new ComandoGuarda(io);
+			else comando = new ComandoNonValido(io);
+			comando.setParametro(parametro);
+			return comando;
+		}
 		
-		Comando comando = null;
-
-		String cmd[] = istruzione.split(" ");
-
-		if(cmd.length == 0)
-			this.nomeComando = "";
-		
-		else if(cmd[0] != "")
-			this.nomeComando = cmd[0];
-
-		if(cmd.length == 2)
-			this.parametro = cmd[1];
-    	
-		if (this.nomeComando == null)
-			comando = new ComandoNonValido(this.console);
-		else if (this.nomeComando.equals("vai"))
-			comando = new ComandoVai(this.console);
-		else if (this.nomeComando.equals("prendi"))
-			comando = new ComandoPrendi(this.console);
-		else if (this.nomeComando.equals("posa"))
-			comando = new ComandoPosa(this.console);
-		else if (this.nomeComando.equals("aiuto"))
-			comando = new ComandoAiuto(this.console);
-		else if (this.nomeComando.equals("fine"))
-			comando = new ComandoFine(this.console);
-		else if (this.nomeComando.equals("guarda"))
-			comando = new ComandoGuarda(this.console);
-		else comando = new ComandoNonValido(this.console);
-		comando.setParametro(this.parametro);
-		return comando;
 	}
 }
